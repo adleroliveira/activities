@@ -5,5 +5,8 @@
     "dev": "pnpm --filter \"@activities/*\" run dev",
     "build": "pnpm --filter \"@activities/*\" run build",
     "start": "pnpm --filter @activities/backend start"
+  },
+  "dependencies": {
+    "microservice-framework": "github:adleroliveira/microservice-framework#v1.2.19"
   }
 }
