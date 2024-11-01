@@ -1,4 +1,4 @@
-import React, { useState, DragEvent } from 'react';
+import { useState, DragEvent } from 'react';
 import { Upload, Activity, Users, Building2, BarChart3, AlertCircle, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
