@@ -8,7 +8,8 @@ import { useFileUpload } from './hooks/useFileUpload';
 const AppLayout = () => {
   const { uploadProgress, uploadFile, resetUpload } = useFileUpload();
   const [isDragging, setIsDragging] = useState(false);
-  const [processingStatus, setProcessingStatus] = useState({
+  // setProcessingStatus
+  const [processingStatus] = useState({
     isProcessing: false,
     currentFile: null as string | null,
     progress: 0
@@ -46,16 +47,6 @@ const AppLayout = () => {
     event.preventDefault();
     setIsDragging(false);
   };
-
-  const st = false;
-
-  if (st) {
-    setProcessingStatus({
-      isProcessing: true,
-      currentFile: 'example.ics',
-      progress: 50
-    });
-  }
 
   return (
     <div className="min-h-screen bg-gray-100">

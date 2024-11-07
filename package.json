@@ -7,6 +7,6 @@
     "start": "pnpm --filter @activities/backend start"
   },
   "dependencies": {
-    "microservice-framework": "github:adleroliveira/microservice-framework#v1.2.19"
+    "microservice-framework": "github:adleroliveira/microservice-framework#v1.2.25"
   }
 }

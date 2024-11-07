@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { UploadStatusUpdate } from "../services/AppController";
+import { appController } from "../services/AppController";
 
 interface UploadProgress {
   progress: number;
@@ -21,9 +23,25 @@ export const useFileUpload = () => {
     fileName: null,
   });
 
+  const updateProgress = useCallback((status: UploadStatusUpdate) => {
+    setUploadProgress((prev) => ({
+      ...prev,
+      progress: status.progress,
+      message: `Uploading: ${status.progress}%`,
+    }));
+  }, []);
+
+  useEffect(() => {
+    appController.registerMessageHandler("uploadProgress", updateProgress);
+
+    return () => {
+      // Clean up the handler when component unmounts
+      // appController.unregisterMessageHandler("uploadProgress");
+    };
+  }, [updateProgress]);
+
   const uploadFile = async (file: File): Promise<UploadResponse> => {
     try {
-      // Create FormData
       const formData = new FormData();
       formData.append("file", file);
 
@@ -34,24 +52,27 @@ export const useFileUpload = () => {
         fileName: file.name,
       });
 
-      // Make the upload request
       const response = await fetch("http://localhost:3000/api/upload", {
         method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Upload failed: ${errorText || response.statusText}`);
       }
 
       const data = await response.json();
 
-      setUploadProgress({
+      setUploadProgress((prev) => ({
+        ...prev,
         progress: 100,
         status: "success",
         message: "Upload complete!",
-        fileName: file.name,
-      });
+      }));
 
       return {
         success: true,
@@ -59,12 +80,13 @@ export const useFileUpload = () => {
         fileId: data.fileId,
       };
     } catch (error) {
-      setUploadProgress({
+      console.error("Upload error:", error);
+      setUploadProgress((prev) => ({
+        ...prev,
         progress: 0,
         status: "error",
         message: error instanceof Error ? error.message : "Upload failed",
-        fileName: file.name,
-      });
+      }));
 
       return {
         success: false,
